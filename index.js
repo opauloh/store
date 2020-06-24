@@ -50,7 +50,7 @@ const TOGGLE_TODO = 'TOGGLE_TODO';
 const ADD_GOAL = 'ADD_GOAL';
 const REMOVE_GOAL = 'REMOVE_GOAL';
 
-//Action Creator
+// Action Creator
 function addTodoAction(todo) {
     return {
         type: ADD_TODO,
