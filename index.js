@@ -94,7 +94,7 @@ function todos(state = [], action) {
         case ADD_TODO:
             return state.concat([action.todo])
         case REMOVE_TODO:
-            return state.fiter(todo => todo.id !== action.id)
+            return state.filter(todo => todo.id !== action.id)
         case TOGGLE_TODO:
             return state.map(todo => todo.id !== action.id ? todo :
                 { ...state, complete: !state.complete })
@@ -108,7 +108,7 @@ function goals(state = [], action) {
         case ADD_GOAL:
             return state.concat([action.goal])
         case REMOVE_GOAL:
-            return state.fiter(goal => goal.id !== action.id)
+            return state.filter(goal => goal.id !== action.id)
         default:
             return state
     }
@@ -123,7 +123,7 @@ function app(state = {}, action) {
 
 
 
-
+/*
 // const store = createStore(todos);
 const store = createStore(app);
 const unsubscribe = store.subscribe(() => {
@@ -169,3 +169,4 @@ store.dispatch(addGoalAction({
 }))
 
 store.dispatch(removeGoalAction(1));
+*/
