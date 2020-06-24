@@ -58,6 +58,36 @@ function addTodoAction(todo) {
     }
 }
 
+function removeTodoAction(id) {
+    return {
+        type: REMOVE_TODO,
+        id
+    }
+}
+
+function toggleTodoAction(id) {
+    return {
+        type: TOGGLE_TODO,
+        id
+    }
+}
+
+function addGoalAction(goal) {
+    return {
+        type: ADD_GOAL,
+        goal
+    }
+}
+
+function removeGoalAction(id) {
+    return {
+        type: REMOVE_GOAL,
+        id
+    }
+}
+
+
+
 // Reducer function
 function todos(state = [], action) {
     switch (action.type) {
@@ -96,14 +126,15 @@ function app(state = {}, action) {
 
 // const store = createStore(todos);
 const store = createStore(app);
-store.subscribe(() => {
+const unsubscribe = store.subscribe(() => {
     console.log('The new state is: ', store.getState());
 });
 
-const unsubscribe = store.subscribe(() => {
+const unsubscribeAgain = store.subscribe(() => {
     console.log('woooot 2');
 });
-unsubscribe()
+// unsubscribeAgain();
+
 // store.dispatch({
 //     type: 'ADD_TODO',
 //     todo: {
@@ -117,3 +148,24 @@ store.dispatch(addTodoAction({
     name: 'Learn Redux',
     complete: false
 }))
+store.dispatch(addTodoAction({
+    id: 1,
+    name: 'Learn React',
+    complete: false
+}))
+
+store.dispatch(removeTodoAction(1));
+
+store.dispatch(toggleTodoAction(0));
+
+store.dispatch(addGoalAction({
+    id: 0,
+    name: 'Master React Eco-System'
+}))
+
+store.dispatch(addGoalAction({
+    id: 1,
+    name: 'Lose 5 pounds'
+}))
+
+store.dispatch(removeGoalAction(1));
