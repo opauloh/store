@@ -1,4 +1,3 @@
-
 /*
 Characteristics of pure functions
     They always return the same result if the same arguments are passed in
@@ -44,6 +43,7 @@ function createStore(reducer) {
 }
 
 //App Code
+// Here we are Leveraging constants
 const ADD_TODO = 'ADD_TODO';
 const REMOVE_TODO = 'REMOVE_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
