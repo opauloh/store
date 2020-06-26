@@ -97,7 +97,7 @@ function todos(state = [], action) {
             return state.filter(todo => todo.id !== action.id)
         case TOGGLE_TODO:
             return state.map(todo => todo.id !== action.id ? todo :
-                { ...state, complete: !state.complete })
+                { ...todo, complete: !todo.complete })
         default:
             return state;
     }
@@ -122,10 +122,8 @@ function app(state = {}, action) {
 }
 
 
-
 /*
 // const store = createStore(todos);
-const store = createStore(app);
 const unsubscribe = store.subscribe(() => {
     console.log('The new state is: ', store.getState());
 });
