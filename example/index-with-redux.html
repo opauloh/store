@@ -22,11 +22,11 @@
 </div>
 
 <body>
-    <script type='text/javascript' src='../index.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js'></script>
     <script type='text/javascript' src='../reducer.js'></script>
     <script type='text/javascript'>
 
-        const store = createStore(app);
+        const store = Redux.createStore(app);
         store.subscribe(() => {
             console.log('The new state is: ', store.getState());
 
