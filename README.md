@@ -20,3 +20,6 @@ This library is for educatinal purposes, to learn about and understand reducers
 
 ### What is an action?
 An object which describes what sort of transformation you want to make to your state
+
+### What does Redux Middleware allow you to do?
+Hook into the moment after dispatching an action but before that action reaches the reducer.
