@@ -70,10 +70,4 @@ function goals(state = [], action) {
     }
 }
 
-function app(state = {}, action) {
-    return {
-        todos: todos(state.todos, action),
-        goals: goals(state.goals, action)
-    }
-}
 
