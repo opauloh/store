@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todos / Goals</title>
+</head>
+
+<div id='app'></div>
+
+<body>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js'></script>
+  <script src='https://unpkg.com/react@16.13.1/umd/react.development.js'></script>
+  <script src='https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js'></script>
+  <script src='https://unpkg.com/babel-standalone@6.26.0/babel.min.js'></script>
+  <script src="./fake-api.js"></script>
+  <script type='text/javascript' src='../../reducer.js'></script>
+  <script type='text/javascript'>
+
+    const store = Redux.createStore(Redux.combineReducers({
+      todos, goals
+    }), Redux.applyMiddleware(checker, logger));
+
+    const generateId = () => Math.random().toString(36).substring(2) +
+      (new Date()).getTime().toString(36);
+
+  </script>
+  <script type="text/babel">
+    function List(props) {
+      return (
+        <ul>
+          {props.items.map(item => (
+            <li key={item.id}>
+              <span
+                onClick={() => props.toggle && props.toggle(item.id)}
+                style={{ textDecoration: item.complete ? 'line-through' : 'none' }}
+              >{item.name}</span>
+              <button onClick={() => props.remove(item)}>X</button>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    class Todos extends React.Component {
+
+      addItem = (e) => {
+        e.preventDefault()
+        const name = this.input.value
+        this.input.value = '';
+
+        this.props.store.dispatch(addTodoAction({
+          id: generateId(),
+          name,
+          complete: false
+        }))
+      }
+
+      removeItem = todo => this.props.store.dispatch(
+        removeTodoAction(todo.id))
+
+      toggleItem = id => this.props.store.dispatch(
+        toggleTodoAction(id))
+
+      render() {
+
+
+        return (
+          <div>
+            <h1>Todo List</h1>
+            <input
+              type='text'
+              placeholder='Add Todo'
+              ref={(input) => this.input = input}
+            />
+            <button onClick={this.addItem}>Add Todo</button>
+            <List
+              toggle={this.toggleItem}
+              items={this.props.todos}
+              remove={this.removeItem}
+            />
+          </div>
+        )
+      }
+    }
+
+    class Goals extends React.Component {
+      addItem = (e) => {
+        e.preventDefault()
+        const name = this.input.value
+        this.input.value = '';
+
+        this.props.store.dispatch(addGoalAction({
+          id: generateId(),
+          name
+        }))
+      }
+
+      removeItem = (goal) => this.props.store.dispatch(
+        removeGoalAction(goal.id)
+      )
+
+      render() {
+        return (
+          <div>
+            <h1>Goals</h1>
+            <input
+              type="text"
+              placeholder='Add Goal'
+              ref={(input) => this.input = input}
+            />
+            <button onClick={this.addItem}>Add Goal</button>
+            <List
+              items={this.props.goals}
+              remove={this.removeItem}
+            />
+          </div>
+        )
+      }
+    }
+
+    class App extends React.Component {
+      componentDidMount() {
+        const { store } = this.props
+
+        Promise.all([
+          API.fetchTodos(),
+          API.fetchGoals(),
+        ]).then(([todos, goals]) => {
+          store.dispatch(receiveDataAction(todos, goals));
+        })
+
+        store.subscribe(() => this.forceUpdate())
+      }
+      render() {
+        const { store } = this.props
+        const { todos, goals } = store.getState()
+
+        return (
+          <div>
+            <Todos store={store} todos={todos} />
+            <Goals store={store} goals={goals} />
+          </div>
+        )
+      }
+    }
+
+    ReactDOM.render(
+      <App store={store} />,
+      document.getElementById('app')
+    )
+  </script>
+</body>
+
+</html>
