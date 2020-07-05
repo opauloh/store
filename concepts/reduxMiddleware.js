@@ -49,4 +49,17 @@ redux-cookies-middleware: a Redux middleware which syncs a subset of your Redux 
 https://github.com/conorhastings/redux-test-recorder
 redux-test-recorder: Redux test recorder is a redux middleware + included component for automagically generating tests for your reducers based on the actions in your app
 
+
+More Asynchronous Options
+With that said, now that you have a solid foundation on Redux and specifically,
+asynchronous Redux, you’ll be in a good position to read up on the different
+options to decide if any would work best for the type of application you’re working on.
+
+I encourage to read up on both of the other (popular) options.
+
+https://github.com/redux-utilities/redux-promise
+Redux Promise - FSA-compliant promise middleware for Redux.
+
+https://github.com/redux-saga/redux-saga
+Redux Saga - An alternative side effect model for Redux apps
 */
