@@ -51,6 +51,17 @@ function receiveDataAction(todos, goals) {
     }
 }
 
+function handleInitialData() {
+    return (dispatch) => {
+        Promise.all([
+            API.fetchTodos(),
+            API.fetchGoals(),
+        ]).then(([todos, goals]) => {
+            dispatch(receiveDataAction(todos, goals))
+        })
+    }
+}
+
 function handleDeleteTodo(todo) {
     return (dispatch) => {
         dispatch(removeTodoAction(todo.id))
@@ -61,6 +72,46 @@ function handleDeleteTodo(todo) {
             })
     }
 }
+
+function handleAddTodo(name, callback) {
+    return (dispatch) => API.saveTodo(name)
+        .then((todo) => {
+            dispatch(addTodoAction(todo))
+            callback();
+        }).catch(() => alert('There was an error. Try again.'))
+}
+
+function handleToggleTodo(id) {
+    return (dispatch) => {
+        dispatch(toggleTodoAction(id))
+
+        return API.saveTodoToggle(id)
+            .catch(() => {
+                dispatch(toggleTodoAction(id))
+                alert('An error occurred. Try again.')
+            })
+    }
+}
+
+function handleDeleteGoal(goal) {
+    return (dispatch) => {
+        dispatch(removeGoalAction(goal.id))
+        return API.deleteGoal(goal.id)
+            .catch(() => {
+                dispatch(addGoalAction(goal))
+                alert('An error occurred. Try again.')
+            })
+    }
+}
+
+function handleAddGoal(name, callback) {
+    return (dispatch) => API.saveGoal(name)
+        .then(goal => {
+            dispatch(addGoalAction(goal));
+            callback();
+        }).catch(() => alert('There was an error. Try again'))
+}
+
 
 
 // Reducer function
@@ -121,7 +172,6 @@ const checker = (store) => (next) => (action) => {
 
 const thunk = (store) => (next) => (action) => {
     if (typeof action === 'function') {
-        console.log('thanks thunk');
         return action(store.dispatch)
     }
 

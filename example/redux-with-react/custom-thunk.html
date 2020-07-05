@@ -57,24 +57,14 @@
       addItem = (e) => {
         e.preventDefault()
 
-        return API.saveTodo(this.input.value)
-          .then((todo) => {
-            this.props.store.dispatch(addTodoAction(todo))
-            this.input.value = '';
-          }).catch(() => alert('There was an error. Try again.'))
+        this.props.dispatch(
+          handleAddTodo(this.input.value, () => this.input.value = '')
+        )
       }
 
       removeItem = todo => this.props.store.dispatch(handleDeleteTodo(todo));
 
-      toggleItem = id => {
-        this.props.store.dispatch(toggleTodoAction(id))
-
-        return API.saveTodoToggle(id)
-          .catch(() => {
-            this.props.store.dispatch(toggleTodoAction(id))
-            alert('An error occurred. Try again.')
-          })
-      }
+      toggleItem = id => this.props.store.dispatch(handleToggleTodo(id));
 
       render() {
 
@@ -102,21 +92,12 @@
       addItem = (e) => {
         e.preventDefault()
 
-        return API.saveGoal(this.input.value)
-          .then(goal => {
-            this.input.value = '';
-            this.props.store.dispatch(addGoalAction(goal));
-          }).catch(() => alert('There was an error. Try again'))
+        this.props.store.dispatch(handleAddGoal(
+          this.input.value, () => this.input.value = ''
+        ))
       }
 
-      removeItem = (goal) => {
-        this.props.store.dispatch(removeGoalAction(goal.id))
-        return API.deleteGoal(goal.id)
-          .catch(() => {
-            this.props.store.dispatch(addGoalAction(goal))
-            alert('An error occurred. Try again.')
-          })
-      }
+      removeItem = (goal) => this.props.store.dispatch(handleDeleteGoal(goal))
 
       render() {
         return (
@@ -141,12 +122,7 @@
       componentDidMount() {
         const { store } = this.props
 
-        Promise.all([
-          API.fetchTodos(),
-          API.fetchGoals(),
-        ]).then(([todos, goals]) => {
-          store.dispatch(receiveDataAction(todos, goals));
-        })
+        store.dispatch(handleInitialData());
 
         store.subscribe(() => this.forceUpdate())
       }
