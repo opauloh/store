@@ -51,6 +51,16 @@ function receiveDataAction(todos, goals) {
     }
 }
 
+function handleDeleteTodo(todo) {
+    return (dispatch) => {
+        dispatch(removeTodoAction(todo.id))
+        return API.deleteTodo(todo.id)
+            .catch(() => {
+                dispatch(addTodoAction(todo))
+                alert('An error occurred. Try again.')
+            })
+    }
+}
 
 
 // Reducer function
@@ -104,6 +114,15 @@ const checker = (store) => (next) => (action) => {
         action.goal.name.toLowerCase().indexOf('bitcoin') !== -1
     ) {
         return alert('nope, this is a bad idea');
+    }
+
+    return next(action)
+}
+
+const thunk = (store) => (next) => (action) => {
+    if (typeof action === 'function') {
+        console.log('thanks thunk');
+        return action(store.dispatch)
     }
 
     return next(action)
