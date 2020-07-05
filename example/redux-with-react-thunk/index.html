@@ -58,7 +58,7 @@
       addItem = (e) => {
         e.preventDefault()
 
-        this.props.dispatch(
+        this.props.store.dispatch(
           handleAddTodo(this.input.value, () => this.input.value = '')
         )
       }
