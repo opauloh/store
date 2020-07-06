@@ -23,3 +23,6 @@ An object which describes what sort of transformation you want to make to your s
 
 ### What does Redux Middleware allow you to do?
 Hook into the moment after dispatching an action but before that action reaches the reducer.
+
+### What means "connect":
+To Render any component, passing that component any data it needs from the store, and assuming it will re-render when it changes
