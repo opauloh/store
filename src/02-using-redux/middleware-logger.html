@@ -22,17 +22,13 @@
 </div>
 
 <body>
-    <script type='text/javascript' src='../index.js'></script>
-    <script type='text/javascript' src='../reducer.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js'></script>
+    <script type='text/javascript' src='./reducer.js'></script>
     <script type='text/javascript'>
 
-        function app(state = {}, action) {
-            return {
-                todos: todos(state.todos, action),
-                goals: goals(state.goals, action)
-            }
-        }
-        const store = createStore(app);
+        const store = Redux.createStore(Redux.combineReducers({
+            todos, goals
+        }), Redux.applyMiddleware(checker, logger));
         store.subscribe(() => {
             console.log('The new state is: ', store.getState());
 

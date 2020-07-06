@@ -22,13 +22,30 @@
 </div>
 
 <body>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js'></script>
-    <script type='text/javascript' src='../../reducer.js'></script>
+    <script type='text/javascript' src='./store.js'></script>
+    <script type='text/javascript' src='./reducer.js'></script>
     <script type='text/javascript'>
 
-        const store = Redux.createStore(Redux.combineReducers({
-            todos, goals
-        }), Redux.applyMiddleware(checker));
+        function checkAndDispatch(store, action) {
+            if (action.type === ADD_TODO && action.todo.name.toLowerCase().indexOf('bitcoin') !== -1) {
+                return alert('nope, this is a bad idea');
+            }
+
+            if (action.type === ADD_GOAL && action.goal.name.toLowerCase().indexOf('bitcoin') !== -1) {
+                return alert('nope, this is a bad idea');
+            }
+
+            return store.dispatch(action)
+        }
+
+        function app(state = {}, action) {
+            return {
+                todos: todos(state.todos, action),
+                goals: goals(state.goals, action)
+            }
+        }
+        const store = createStore(app);
+
         store.subscribe(() => {
             console.log('The new state is: ', store.getState());
 
@@ -54,7 +71,7 @@
             const text = document.createTextNode(todo.name)
 
             const removeBtn = createRemoveButton(() => {
-                store.dispatch(removeTodoAction(todo.id))
+                checkAndDispatch(store, removeTodoAction(todo.id))
             })
 
             node.appendChild(text);
@@ -63,7 +80,7 @@
                 'line-through' : 'none';
 
             node.addEventListener('click', () => {
-                store.dispatch(toggleTodoAction(todo.id))
+                checkAndDispatch(store, toggleTodoAction(todo.id))
             })
 
             document.getElementById('todos')
@@ -75,7 +92,7 @@
             const text = document.createTextNode(goal.name);
 
             const removeBtn = createRemoveButton(() => {
-                store.dispatch(removeGoalAction(goal.id))
+                checkAndDispatch(store, removeGoalAction(goal.id))
             })
 
             node.appendChild(text);
@@ -92,7 +109,7 @@
             const name = input.value;
             input.value = '';
 
-            store.dispatch(addTodoAction({
+            checkAndDispatch(store, addTodoAction({
                 id: generateId(),
                 name,
                 complete: false
@@ -104,7 +121,7 @@
             const name = input.value;
             input.value = '';
 
-            store.dispatch(addGoalAction({
+            checkAndDispatch(store, addGoalAction({
                 id: generateId(),
                 name,
                 complete: false

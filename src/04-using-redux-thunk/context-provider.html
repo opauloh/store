@@ -15,8 +15,8 @@
   <script src='https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js'></script>
   <script src='https://unpkg.com/babel-standalone@6.26.0/babel.min.js'></script>
   <script src='https://unpkg.com/redux-thunk@2.3.0/dist/redux-thunk.min.js'></script>
-  <script src="../redux-with-react/fake-api.js"></script>
-  <script type='text/javascript' src='../../reducer.js'></script>
+  <script src="../../utils/fake-api.js"></script>
+  <script type='text/javascript' src='./reducer.js'></script>
   <script type='text/javascript'>
 
     function loading(state = true, action) {
@@ -119,24 +119,42 @@
       }
     }
 
+    class ConnectedTodos extends React.Component {
+      render() {
+        return (
+          <Context.Consumer>
+            {(store) => {
+              const { todos } = store.getState()
+              return <Todos todos={todos} dispatch={store.dispatch} />
+            }}
+          </Context.Consumer>
+        )
+      }
+    }
 
-    const ConnectedTodos = connect((state) => ({
-      todos: state.todos
-    }))(Todos)
-
-    const ConnectedGoals = connect((state) => ({
-      goals: state.goals
-    }))(Goals)
+    class ConnectedGoals extends React.Component {
+      render() {
+        return (
+          <Context.Consumer>
+            {(store) => {
+              const { goals } = store.getState()
+              return <Goals goals={goals} dispatch={store.dispatch} />
+            }}
+          </Context.Consumer>
+        )
+      }
+    }
 
     class App extends React.Component {
       componentDidMount() {
-        const { dispatch } = this.props
+        const { store } = this.props
 
-        dispatch(handleInitialData());
+        store.dispatch(handleInitialData());
+
+        store.subscribe(() => this.forceUpdate())
       }
       render() {
-        const { loading } = this.props;
-
+        const { loading } = store.getState()
         if (loading === true) {
           return (<h3>Loading</h3>)
         }
@@ -151,47 +169,17 @@
 
     const Context = React.createContext();
 
-    // Improvement - Connect:
-    // Render any component, passing that component any data it needs from the store
-    function connect(mapStateToProps) {
-      return (Component) => {
-        class Receiver extends React.Component {
-          componentDidMount() {
-            const { subscribe } = this.props.store;
-
-            this.unsubscribe = subscribe(() => this.forceUpdate());
-          }
-          componentWillUnmount() {
-            this.unsubscribe();
-          }
-          render() {
-            const { dispatch, getState } = this.props.store;
-            const state = getState();
-            const stateNeeded = mapStateToProps(state);
-
-            return <Component {...stateNeeded} dispatch={dispatch} />
-          }
-        }
-
-        class ConnectedComponent extends React.Component {
-          render() {
-            return (
-              <Context.Consumer>
-                {(store) => <Receiver store={store} />}
-              </Context.Consumer>
-            )
-          }
-        }
-
-        return ConnectedComponent
+    class ConnectedApp extends React.Component {
+      render() {
+        return (
+          <Context.Consumer>
+            {(store) => (
+              <App store={store} />
+            )}
+          </Context.Consumer>
+        )
       }
     }
-
-    const ConnectedApp = connect((state) => ({
-      loading: state.loading
-    }))(App)
-
-
     class Provider extends React.Component {
       render() {
         return (

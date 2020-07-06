@@ -14,13 +14,22 @@
   <script src='https://unpkg.com/react@16.13.1/umd/react.development.js'></script>
   <script src='https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js'></script>
   <script src='https://unpkg.com/babel-standalone@6.26.0/babel.min.js'></script>
-
-  <script type='text/javascript' src='../../reducer.js'></script>
+  <script src="../../utils/fake-api.js"></script>
+  <script type='text/javascript' src='./reducer.js'></script>
   <script type='text/javascript'>
 
+    function loading(state = true, action) {
+      switch (action.type) {
+        case RECEIVE_DATA:
+          return false;
+        default:
+          return state
+      }
+    }
+
     const store = Redux.createStore(Redux.combineReducers({
-      todos, goals
-    }), Redux.applyMiddleware(checker, logger));
+      todos, goals, loading
+    }), Redux.applyMiddleware(thunk, checker, logger));
 
     const generateId = () => Math.random().toString(36).substring(2) +
       (new Date()).getTime().toString(36);
@@ -47,21 +56,15 @@
 
       addItem = (e) => {
         e.preventDefault()
-        const name = this.input.value
-        this.input.value = '';
 
-        this.props.store.dispatch(addTodoAction({
-          id: generateId(),
-          name,
-          complete: false
-        }))
+        this.props.dispatch(
+          handleAddTodo(this.input.value, () => this.input.value = '')
+        )
       }
 
-      removeItem = todo => this.props.store.dispatch(
-        removeTodoAction(todo.id))
+      removeItem = todo => this.props.store.dispatch(handleDeleteTodo(todo));
 
-      toggleItem = id => this.props.store.dispatch(
-        toggleTodoAction(id))
+      toggleItem = id => this.props.store.dispatch(handleToggleTodo(id));
 
       render() {
 
@@ -88,18 +91,13 @@
     class Goals extends React.Component {
       addItem = (e) => {
         e.preventDefault()
-        const name = this.input.value
-        this.input.value = '';
 
-        this.props.store.dispatch(addGoalAction({
-          id: generateId(),
-          name
-        }))
+        this.props.store.dispatch(handleAddGoal(
+          this.input.value, () => this.input.value = ''
+        ))
       }
 
-      removeItem = (goal) => this.props.store.dispatch(
-        removeGoalAction(goal.id)
-      )
+      removeItem = (goal) => this.props.store.dispatch(handleDeleteGoal(goal))
 
       render() {
         return (
@@ -124,12 +122,16 @@
       componentDidMount() {
         const { store } = this.props
 
+        store.dispatch(handleInitialData());
+
         store.subscribe(() => this.forceUpdate())
       }
       render() {
         const { store } = this.props
-        const { todos, goals } = store.getState()
-
+        const { todos, goals, loading } = store.getState()
+        if (loading === true) {
+          return (<h3>Loading</h3>)
+        }
         return (
           <div>
             <Todos store={store} todos={todos} />

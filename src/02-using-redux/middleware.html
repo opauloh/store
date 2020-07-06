@@ -23,12 +23,12 @@
 
 <body>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js'></script>
-    <script type='text/javascript' src='../../reducer.js'></script>
+    <script type='text/javascript' src='./reducer.js'></script>
     <script type='text/javascript'>
 
         const store = Redux.createStore(Redux.combineReducers({
             todos, goals
-        }), Redux.applyMiddleware(checker, logger));
+        }), Redux.applyMiddleware(checker));
         store.subscribe(() => {
             console.log('The new state is: ', store.getState());
 

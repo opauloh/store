@@ -15,9 +15,8 @@
   <script src='https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js'></script>
   <script src='https://unpkg.com/babel-standalone@6.26.0/babel.min.js'></script>
   <script src='https://unpkg.com/redux-thunk@2.3.0/dist/redux-thunk.min.js'></script>
-  <script src='https://unpkg.com/react-redux@7.2.0/dist/react-redux.min.js'></script>
-  <script src="../redux-with-react/fake-api.js"></script>
-  <script type='text/javascript' src='../../reducer.js'></script>
+  <script src="../../utils/fake-api.js"></script>
+  <script type='text/javascript' src='./reducer.js'></script>
   <script type='text/javascript'>
 
     function loading(state = true, action) {
@@ -59,14 +58,14 @@
       addItem = (e) => {
         e.preventDefault()
 
-        this.props.dispatch(
+        this.props.store.dispatch(
           handleAddTodo(this.input.value, () => this.input.value = '')
         )
       }
 
-      removeItem = todo => this.props.dispatch(handleDeleteTodo(todo));
+      removeItem = todo => this.props.store.dispatch(handleDeleteTodo(todo));
 
-      toggleItem = id => this.props.dispatch(handleToggleTodo(id));
+      toggleItem = id => this.props.store.dispatch(handleToggleTodo(id));
 
       render() {
 
@@ -94,12 +93,12 @@
       addItem = (e) => {
         e.preventDefault()
 
-        this.props.dispatch(handleAddGoal(
+        this.props.store.dispatch(handleAddGoal(
           this.input.value, () => this.input.value = ''
         ))
       }
 
-      removeItem = (goal) => this.props.dispatch(handleDeleteGoal(goal))
+      removeItem = (goal) => this.props.store.dispatch(handleDeleteGoal(goal))
 
       render() {
         return (
@@ -120,48 +119,31 @@
       }
     }
 
-
-    const ConnectedTodos = ReactRedux.connect((state) => ({
-      todos: state.todos
-    }))(Todos)
-
-    const ConnectedGoals = ReactRedux.connect((state) => ({
-      goals: state.goals
-    }))(Goals)
-
     class App extends React.Component {
       componentDidMount() {
-        const { dispatch } = this.props
+        const { store } = this.props
 
-        dispatch(handleInitialData());
+        store.dispatch(handleInitialData());
+
+        store.subscribe(() => this.forceUpdate())
       }
       render() {
-        const { loading } = this.props;
-
+        const { store } = this.props
+        const { todos, goals, loading } = store.getState()
         if (loading === true) {
           return (<h3>Loading</h3>)
         }
         return (
           <div>
-            <ConnectedTodos />
-            <ConnectedGoals />
+            <Todos store={store} todos={todos} />
+            <Goals store={store} goals={goals} />
           </div>
         )
       }
     }
 
-
-    const ConnectedApp = ReactRedux.connect((state) => ({
-      loading: state.loading
-    }))(App)
-
-
-
     ReactDOM.render(
-      <ReactRedux.Provider store={store}>
-        <ConnectedApp />
-      </ReactRedux.Provider>
-      ,
+      <App store={store} />,
       document.getElementById('app')
     )
   </script>
