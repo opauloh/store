@@ -5,6 +5,9 @@ Like dealing with async data in Redux gets opinionated quickly, so does folder s
 I’ve decided to show you the “rails” pattern. It’s the simplest, but may not be 
 the best for your application. 
 
+Rails-style: separate folders for “actions”, “constants”, “reducers”,
+“containers”, and “components”
+
 Here are a few other options I also like that you can check out.
 
 https://github.com/erikras/ducks-modular-redux
