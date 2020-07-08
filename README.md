@@ -59,3 +59,9 @@ Also the concept of connect components with store
 
 ### 05-using-react-redux
 After everything we learned, we realized that the famous library "react-redux" does the "dirty" work of building the connect for us, and now we know better about each library responsibility, and the best practices of using redux in production, and using redux with react, an amazing combination, when did properly
+
+### 06-create-react-app
+Time to put things all together in a more "real world" react project, using CRA for the sake of facility
+
+### 07-using-hooks
+Refactoring project to hooks while applying two important hooks that comes with react-redux, useDispatch and useSelector, they allowed for a much cleaner version
